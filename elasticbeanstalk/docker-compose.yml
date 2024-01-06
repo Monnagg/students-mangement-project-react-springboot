@@ -1,0 +1,8 @@
+version: "3.8"  # Docker Compose 文件的版本
+
+services:  # 定义服务
+  backend:  # 服务名为 "backend"
+    image: "monnago/student_management:v1"  # 使用的 Docker 镜像
+    ports:
+      - "80:8080"  # 映射端口，将主机的端口 80 映射到容器的端口 8080
+    restart: "always"  # 容器退出时总是重新启动

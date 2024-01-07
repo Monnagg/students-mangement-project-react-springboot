@@ -1,5 +1,5 @@
 import './App.css';
-import {getAllStudents} from "./client";
+import {deleteStudent, getAllStudents} from "./client";
 import React,{useState,useEffect} from "react";
 import {
     DesktopOutlined,
@@ -7,11 +7,36 @@ import {
     PieChartOutlined,
     TeamOutlined,
     UserOutlined,
-    LoadingOutlined
+    LoadingOutlined, DownloadOutlined, PlusOutlined
 } from '@ant-design/icons';
-import {Breadcrumb, Layout, Menu, theme, Table, Empty, Spin} from 'antd';
+import {Radio,Breadcrumb, Layout, Menu, theme, Table, Empty, Spin, Button, Badge, Space, Tag, Avatar, Popconfirm} from 'antd';
+import StudentDrawerForm from "./StudentDrawerForm";
+import {successNotification} from "./Notification";
 const { Header, Content, Footer, Sider } = Layout;
-const columns = [
+const TheAvatar = ({name}) =>{
+    let trim =name.trim();
+    if( trim.length=== 0){
+        return <Avatar icon={<UserOutlined/>}/>
+    }
+    const split = trim.split(" ");
+    if(split.length === 1){
+        return <Avatar>{name.charAt(0)}</Avatar>
+    }
+    return <Avatar>{`${name.charAt(0)} ${name.charAt(name.length-1)}`}</Avatar>
+}
+const removeStudent = (studentId, callback) => {
+    deleteStudent(studentId).then(() => {
+        successNotification( "Student deleted", `Student with ${studentId} was deleted`);
+        callback();
+    });
+}
+const columns = fetchStudents => [
+    {
+        title: '',
+        dataIndex: 'avatar',
+        key: 'avatar',
+        render:(text,student) => <TheAvatar name={student.name}/>
+    },
     {
         title: 'ID',
         dataIndex: 'id',
@@ -32,13 +57,29 @@ const columns = [
         dataIndex: 'gender',
         key: 'gender',
     },
+    {
+        title: 'Actions',
+        key: 'actions',
+        render: (text, student) =>
+            <Radio.Group>
+                <Popconfirm
+                    placement='topRight'
+                    title={`Are you sure to delete ${student.name}`}
+                    onConfirm={() => removeStudent(student.id, fetchStudents)}
+                    okText='Yes'
+                    cancelText='No'>
+                    <Radio.Button value="small">Delete</Radio.Button>
+                </Popconfirm>
+                <Radio.Button value="small">Edit</Radio.Button>
+            </Radio.Group>
+    }
  ];
 const antIcon = < LoadingOutlined style={{fontSize: 24,}}/>;
 function App() {
     const [students, setStudents] = useState([]);
     const [collapsed, setCollapsed] = useState(false);
     const [fetching, setFetching] = useState(true);
-
+    const [showDrawer, setShowDrawer] = useState(false);
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
@@ -64,15 +105,37 @@ function App() {
             return < Empty />;
         }
 
-        return <Table
+        return <>
+            <StudentDrawerForm
+                showDrawer={showDrawer}
+                setShowDrawer={setShowDrawer}
+                fetchStudents={fetchStudents}
+            />
+            <Table
             dataSource={students}
-            columns={columns}
+            columns={columns(fetchStudents)}
             bordered
-            title={() => 'Students'}
+            title={() =>
+                <>
+                <Space>
+                    <Tag>Number of students</Tag>
+                    <Badge count={students.length} className="site-badge-count-4" style={{
+                        backgroundColor: '#52c41a',
+                    }}/>
+                </Space>
+                    <br/><br/>
+                    <Button
+                        onClick={() => setShowDrawer(!showDrawer)}
+                        type="primary" shape="round" icon={<PlusOutlined/>} size="small">
+                        Add New Student
+                    </Button>
+
+                </>}
             pagination={{ pageSize: 50 }}
-            scroll={{ y: 240 }}
+            scroll={{ y: 500 }}
             rwoKey = {(student) => student.id}
-        />;
+        />
+        </>;
     }
 
     function getItem(label, key, icon, children) {

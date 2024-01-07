@@ -1,5 +1,6 @@
 package com.myproject.student;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -8,6 +9,8 @@ class StudentApplicationTests {
 
 	@Test
 	void contextLoads() {
+		//Assertions.fail("OOPs failed");
+
 	}
 
 }

@@ -209,6 +209,8 @@
                         <configuration>
                             <nodeVersion>v18.19.0</nodeVersion>
                             <workingDirectory>src/frontend</workingDirectory>
+                            <installDirectory>${project.basedir}/src/frontend</installDirectory>
+
                         </configuration>
                         <executions>
                             <execution>

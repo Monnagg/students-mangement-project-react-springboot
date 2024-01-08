@@ -15,7 +15,7 @@ env:
   # Java
   JAVA_VERSION: 17
   # DockerHub
-  DOCKER_HUB_USERNAME: MonnaGO
+  DOCKER_HUB_USERNAME: monnago
   # AWS & Elastic Bean Stalk
   AWS_REGION: us-east-1
   EB_ENVIRONMENT_NAME: Students-env #这是 Elastic Beanstalk 环境的名称。环境是你应用程序在 AWS 上的实例，包括应用程序的版本、EC2 实例等。在创建环境时，你为其指定一个名称

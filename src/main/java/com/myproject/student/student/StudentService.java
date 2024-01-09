@@ -34,4 +34,18 @@ public class StudentService {
         }
         studentRepository.deleteById(studentId);
     }
+
+    public void editStudent(Long studentId, Student updatedStudent) {
+        Student existingStudent = studentRepository.findById(studentId)
+                .orElseThrow(() -> new StudentNotFoundException(
+                        "Student with id " + studentId + " does not exist"));
+
+        // 更新学生信息
+        existingStudent.setName(updatedStudent.getName());
+        existingStudent.setEmail(updatedStudent.getEmail());
+        existingStudent.setGender(updatedStudent.getGender());
+
+        // 保存更新后的学生信息
+        studentRepository.save(existingStudent);
+    }
 }

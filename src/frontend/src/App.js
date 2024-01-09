@@ -12,6 +12,7 @@ import {
 import {Radio,Breadcrumb, Layout, Menu, theme, Table, Empty, Spin, Button, Badge, Space, Tag, Avatar, Popconfirm} from 'antd';
 import StudentDrawerForm from "./StudentDrawerForm";
 import {errorNotification, successNotification} from "./Notification";
+import EditStudentDrawerForm from "./editStudentdrawer";
 const { Header, Content, Footer, Sider } = Layout;
 const TheAvatar = ({name}) =>{
     let trim =name.trim();
@@ -38,7 +39,7 @@ const removeStudent = (studentId, callback) => {
         });
     })
 }
-const columns = fetchStudents => [
+const columns = (fetchStudents, setShowEditForm,setSelectedStudent)  => [
     {
         title: '',
         dataIndex: 'avatar',
@@ -78,7 +79,12 @@ const columns = fetchStudents => [
                     cancelText='No'>
                     <Radio.Button value="small">Delete</Radio.Button>
                 </Popconfirm>
-                <Radio.Button value="small">Edit</Radio.Button>
+                <Radio.Button value="small" onClick={() => {
+                    setShowEditForm(true);
+                    setSelectedStudent(student);
+                }}>
+                    Edit
+                </Radio.Button>
             </Radio.Group>
     }
  ];
@@ -88,6 +94,9 @@ function App() {
     const [collapsed, setCollapsed] = useState(false);
     const [fetching, setFetching] = useState(true);
     const [showDrawer, setShowDrawer] = useState(false);
+    const [showEditForm, setShowEditForm] = useState(false);
+    const [selectedStudent, setSelectedStudent] = useState(null);
+
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
@@ -138,9 +147,17 @@ function App() {
                 setShowDrawer={setShowDrawer}
                 fetchStudents={fetchStudents}
             />
+            {showEditForm && (
+                <EditStudentDrawerForm
+                    showDrawer={showEditForm}
+                    setShowDrawer={setShowEditForm}
+                    fetchStudents={fetchStudents}
+                    studentToEdit={selectedStudent}
+                />
+            )}
             <Table
             dataSource={students}
-            columns={columns(fetchStudents)}
+            columns={columns(fetchStudents,setShowEditForm,setSelectedStudent)}
             bordered
             title={() =>
                 <>
@@ -151,12 +168,13 @@ function App() {
                     }}/>
                 </Space>
                     <br/><br/>
+                    <Space>
                     <Button
                         onClick={() => setShowDrawer(!showDrawer)}
                         type="primary" shape="round" icon={<PlusOutlined/>} size="small">
                         Add New Student
                     </Button>
-
+                    </Space>
                 </>}
             pagination={{ pageSize: 50 }}
             scroll={{ y: 500 }}
@@ -174,8 +192,8 @@ function App() {
         };
     }
     const items = [
-        getItem('Option 1', '1', <PieChartOutlined />),
-        getItem('Option 2', '2', <DesktopOutlined />),
+        getItem('Student Management', '1', <PieChartOutlined />),
+        getItem('Events', '2', <DesktopOutlined />),
         getItem('User', 'sub1', <UserOutlined />, [
             getItem('Tom', '3'),
             getItem('Bill', '4'),

@@ -26,3 +26,12 @@ export const deleteStudent = studentId =>
     fetch(`api/v1/students/${studentId}`, {
         method: 'DELETE'
     }).then(checkStatus);
+
+export const editStudent =(id,student)  =>
+    fetch(`api/v1/students/${id}`, {  // 使用 student.id 作为占位符
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(student),
+    }).then(checkStatus);

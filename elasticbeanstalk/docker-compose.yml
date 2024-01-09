@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   backend:
-    image: "monnago/student_management:8.1.2024.1.48.35"
+    image: "monnago/student_management:9.1.2024.21.10.44"
     ports:
       - "80:8080"
     restart: "always"
